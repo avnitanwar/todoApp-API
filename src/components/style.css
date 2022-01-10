@@ -1,0 +1,7 @@
+.inputTodo {
+  width: 500px;
+  display: flex;
+  justify-content: space-between;
+  color: #5b5e55;
+  font-size: 20px;
+}
