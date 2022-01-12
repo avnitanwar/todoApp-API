@@ -1,17 +1,24 @@
 import React from 'react';
-import Box from '@mui/material/Box';
-import { TextField, Typography, Button } from '@mui/material';
-import { Link } from 'react-router-dom';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+
+import Box from '@mui/material/Box';
+import { TextField, Typography } from '@mui/material';
+import { styled } from '@mui/material';
+
 import Spinner from './shared/Spinner';
-//import Button from './shared/Button';
+import SharedButton from './shared/SharedButton';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
   const [loginState, setLoginState] = useState(false);
+
+  const Field1 = styled(Typography)({
+    marginTop: 10
+  });
 
   async function loginButton() {
     setLoginState(true);
@@ -51,15 +58,9 @@ const Login = () => {
         left: '0px'
       }}
     >
-      <Typography
-        sx={{ marginTop: 10 }}
-        color="#407cc9"
-        gutterBottom
-        variant="h4"
-        align="center"
-      >
+      <Field1 color="#407cc9" gutterBottom variant="h4" align="center">
         LOGIN
-      </Typography>
+      </Field1>
       <br />
       <TextField
         sx={{ m: 1, width: '500px' }}
@@ -78,13 +79,10 @@ const Login = () => {
         onChange={(e) => setPassword(e.target.value)}
       />
       <br />
-      <Button variant="contained" onClick={loginButton}>
-        {loginState ? <Spinner /> : 'LOGIN'}
-      </Button>
-      {/* <Button
-        handleShow={() => loginButton}
+      <SharedButton
+        handleShow={() => loginButton()}
         buttonText={loginState ? <Spinner /> : 'LOGIN'}
-      /> */}
+      />
       <br />
       <Link
         style={{ color: '#407cc9', textDecoration: 'none', fontSize: '18px' }}

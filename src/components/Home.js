@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
+
 import { Box } from '@mui/material';
 import { Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
 import EditItemModal from './EditItemModal';
-import './style.css';
+
 import Logout from './Logout.js';
 import AddItem from './AddItem';
 import Spinner from './shared/Spinner';
+import './style.css';
 
 const Home = () => {
   const [todos, setTodo] = useState([]);

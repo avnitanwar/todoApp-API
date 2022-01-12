@@ -1,8 +1,10 @@
 import React from 'react';
-import { Box } from '@mui/system';
 import { useState } from 'react';
-import Spinner from './shared/Spinner';
+
+import { Box } from '@mui/system';
 import { TextField } from '@mui/material';
+
+import Spinner from './shared/Spinner';
 
 const AddItem = ({ todos, setTodo }) => {
   const [inputLoader, setInputLoader] = useState(false);

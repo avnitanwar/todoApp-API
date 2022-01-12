@@ -1,9 +1,12 @@
 import React from 'react';
-import Box from '@mui/material/Box';
-import { TextField, Button, Typography } from '@mui/material';
-import Spinner from './shared/Spinner';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+import Box from '@mui/material/Box';
+import { TextField, Typography } from '@mui/material';
+
+import Spinner from './shared/Spinner';
+import SharedButton from './shared/SharedButton';
 
 const Register = () => {
   const [email, setEmail] = useState('');
@@ -98,9 +101,10 @@ const Register = () => {
         onChange={(e) => setPassword(e.target.value)}
       />
       <br />
-      <Button variant="contained" onClick={registerButton}>
-        {registerState ? <Spinner /> : 'REGISTER'}
-      </Button>
+      <SharedButton
+        handleShow={() => registerButton()}
+        buttonText={registerState ? <Spinner /> : 'REGISTER'}
+      />
       <br />
     </Box>
   );
