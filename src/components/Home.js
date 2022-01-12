@@ -29,10 +29,12 @@ const Home = () => {
         return response.json();
       })
       .then((data) => {
-        //console.log(data.data[0]._id)
         const todoData = data.data.reverse();
         setTodo(todoData);
         setPageLoader(false);
+      })
+      .catch((err) => {
+        console.log(err);
       });
   }, []);
 

@@ -13,25 +13,28 @@ const AddItem = ({ todos, setTodo }) => {
   async function addTodo(e) {
     e.preventDefault();
     setInputLoader(true);
-    console.log('add todo enters');
-    const todoList = { description };
-    const token = localStorage.getItem('token-value');
-    const response1 = await fetch(
-      'https://api-nodejs-todolist.herokuapp.com/task',
-      {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify(todoList)
-      }
-    );
-    const response2 = await response1.json();
-    setTodo([response2.data, ...todos]);
-    setCurrentTodo('');
-    setInputLoader(false);
-    localStorage.setItem('todo-data', JSON.stringify(response2));
+    try {
+      const todoList = { description };
+      const token = localStorage.getItem('token-value');
+      const response1 = await fetch(
+        'https://api-nodejs-todolist.herokuapp.com/task',
+        {
+          method: 'POST',
+          headers: {
+            'Content-type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify(todoList)
+        }
+      );
+      const response2 = await response1.json();
+      setTodo([response2.data, ...todos]);
+      setCurrentTodo('');
+      setInputLoader(false);
+      localStorage.setItem('todo-data', JSON.stringify(response2));
+    } catch (err) {
+      console.log(err);
+    }
   }
   return (
     <form onSubmit={addTodo}>

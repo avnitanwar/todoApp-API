@@ -18,20 +18,25 @@ const Register = () => {
 
   async function registerButton() {
     setRegisterState(true);
-    const newUser = { name, age, email, password };
-    const result = await fetch(
-      'https://api-nodejs-todolist.herokuapp.com/user/register',
-      {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json'
-        },
-        body: JSON.stringify(newUser)
-      }
-    );
-    const result2 = await result.json();
-    const tokenValue = result2.token;
-    localStorage.setItem('token-value', tokenValue);
+    try {
+      const newUser = { name, age, email, password };
+      const result = await fetch(
+        'https://api-nodejs-todolist.herokuapp.com/user/register',
+        {
+          method: 'POST',
+          headers: {
+            'Content-type': 'application/json'
+          },
+          body: JSON.stringify(newUser)
+        }
+      );
+      const result2 = await result.json();
+      const tokenValue = result2.token;
+      localStorage.setItem('token-value', tokenValue);
+    } catch (err) {
+      console.log(err);
+    }
+
     if (localStorage.getItem('token-value') !== '') {
       navigate('/home');
       setRegisterState(false);
