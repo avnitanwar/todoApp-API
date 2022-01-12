@@ -22,20 +22,24 @@ const Login = () => {
 
   async function loginButton() {
     setLoginState(true);
-    const data = { email, password };
-    const res1 = await fetch(
-      'https://api-nodejs-todolist.herokuapp.com/user/login',
-      {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      }
-    );
-    const res2 = await res1.json();
-    const tokenValue = res2.token;
-    localStorage.setItem('token-value', tokenValue);
+    try {
+      const data = { email, password };
+      const res1 = await fetch(
+        'https://api-nodejs-todolist.herokuapp.com/user/login',
+        {
+          method: 'POST',
+          headers: {
+            'Content-type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        }
+      );
+      const res2 = await res1.json();
+      const tokenValue = res2.token;
+      localStorage.setItem('token-value', tokenValue);
+    } catch (err) {
+      console.log(err);
+    }
     if (localStorage.getItem('token-value') !== '') {
       navigate('/home');
       setLoginState(false);
@@ -58,7 +62,7 @@ const Login = () => {
         left: '0px'
       }}
     >
-      <Field1 color="#407cc9" gutterBottom variant="h4" align="center">
+      <Field1 color="#407cc9" variant="h4" align="center">
         LOGIN
       </Field1>
       <br />

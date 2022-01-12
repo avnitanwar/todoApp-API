@@ -13,29 +13,33 @@ const EditItemModal = ({ todos, setTodo, item, setItem }) => {
   const open = item !== null ? true : false;
 
   async function editItem(id) {
-    const token = localStorage.getItem('token-value');
-    const res1 = await fetch(
-      `https://api-nodejs-todolist.herokuapp.com/task/${id}`,
-      {
-        method: 'PUT',
-        headers: {
-          'Content-type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          description: input
-        })
-      }
-    );
-    const res2 = await res1.json();
-    const updatedItem = res2.data.description;
-    const updatedList = todos.map((todoItem) => {
-      return todoItem._id === id
-        ? { ...todoItem, description: updatedItem }
-        : todoItem;
-    });
-    setTodo(updatedList);
-    setItem(null);
+    try {
+      const token = localStorage.getItem('token-value');
+      const res1 = await fetch(
+        `https://api-nodejs-todolist.herokuapp.com/task/${id}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            description: input
+          })
+        }
+      );
+      const res2 = await res1.json();
+      const updatedItem = res2.data.description;
+      const updatedList = todos.map((todoItem) => {
+        return todoItem._id === id
+          ? { ...todoItem, description: updatedItem }
+          : todoItem;
+      });
+      setTodo(updatedList);
+      setItem(null);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   return (

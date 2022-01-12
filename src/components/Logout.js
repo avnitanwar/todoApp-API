@@ -8,17 +8,22 @@ const Logout = () => {
   const navigate = useNavigate();
 
   async function logoutButton() {
-    const token = localStorage.getItem('token-value');
-    await fetch('https://api-nodejs-todolist.herokuapp.com/user/logout', {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/json',
-        Authorization: `Bearer ${token}`
-      }
-    });
-    localStorage.removeItem('token-value');
-    navigate('/');
+    try {
+      const token = localStorage.getItem('token-value');
+      await fetch('https://api-nodejs-todolist.herokuapp.com/user/logout', {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      });
+      localStorage.removeItem('token-value');
+      navigate('/');
+    } catch (err) {
+      console.log(err);
+    }
   }
+
   return (
     <Box
       sx={{
