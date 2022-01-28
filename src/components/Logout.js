@@ -4,25 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import { Box } from '@mui/system';
 import LogoutIcon from '@mui/icons-material/Logout';
 
+import { useDispatch } from 'react-redux';
+import { logout } from '../action/actionFile';
+
 const Logout = () => {
   const navigate = useNavigate();
-
-  async function logoutButton() {
-    try {
-      const token = localStorage.getItem('token-value');
-      await fetch('https://api-nodejs-todolist.herokuapp.com/user/logout', {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json',
-          Authorization: `Bearer ${token}`
-        }
-      });
-      localStorage.removeItem('token-value');
-      navigate('/');
-    } catch (err) {
-      console.log(err);
-    }
-  }
+  const dispatch = useDispatch();
 
   return (
     <Box
@@ -37,7 +24,7 @@ const Logout = () => {
     >
       <LogoutIcon
         sx={{ color: 'white', fontSize: 27, p: 2 }}
-        onClick={logoutButton}
+        onClick={() => dispatch(logout(navigate))}
       />
     </Box>
   );

@@ -1,51 +1,32 @@
 import React from 'react';
-import { useState } from 'react';
 
 import { Box } from '@mui/system';
 import { TextField } from '@mui/material';
 
 import Spinner from './shared/Spinner';
 
-const AddItem = ({ todos, setTodo }) => {
-  const [inputLoader, setInputLoader] = useState(false);
-  const [description, setCurrentTodo] = useState('');
+import { useDispatch, useSelector } from 'react-redux';
 
-  async function addTodo(e) {
-    e.preventDefault();
-    setInputLoader(true);
-    try {
-      const todoList = { description };
-      const token = localStorage.getItem('token-value');
-      const response1 = await fetch(
-        'https://api-nodejs-todolist.herokuapp.com/task',
-        {
-          method: 'POST',
-          headers: {
-            'Content-type': 'application/json',
-            Authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify(todoList)
-        }
-      );
-      const response2 = await response1.json();
-      setTodo([response2.data, ...todos]);
-      setCurrentTodo('');
-      setInputLoader(false);
-      localStorage.setItem('todo-data', JSON.stringify(response2));
-    } catch (err) {
-      console.log(err);
-    }
-  }
+import { SET_CURRENT_TODO } from '../constants/constantContainer';
+import { addTodo } from '../action/actionFile';
+
+const AddItem = () => {
+  const inputLoader = useSelector((state) => state.todosData.addingItemLoader);
+  const currentTodo = useSelector((state) => state.todosData.currentTodo);
+  const dispatch = useDispatch();
+
   return (
-    <form onSubmit={addTodo}>
+    <form onSubmit={(e) => dispatch(addTodo(e))}>
       <Box sx={{ display: 'flex' }}>
         <TextField
           id="outlined-basic"
-          value={description}
+          value={currentTodo}
           label="AddItem"
           variant="outlined"
           sx={{ m: 2, width: '500px' }}
-          onChange={(e) => setCurrentTodo(e.target.value)}
+          onChange={(e) =>
+            dispatch({ type: SET_CURRENT_TODO, payload: e.target.value })
+          }
         ></TextField>
         {inputLoader ? (
           <Box sx={{ position: 'relative', top: '26px' }}>
