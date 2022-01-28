@@ -8,40 +8,19 @@ import { TextField, Typography } from '@mui/material';
 import Spinner from './shared/Spinner';
 import SharedButton from './shared/SharedButton';
 
+import { register } from '../action/actionFile';
+
+import { useDispatch, useSelector } from 'react-redux';
+
 const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [age, setAge] = useState('');
   const navigate = useNavigate();
-  const [registerState, setRegisterState] = useState(false);
+  const dispatch = useDispatch();
 
-  async function registerButton() {
-    setRegisterState(true);
-    try {
-      const newUser = { name, age, email, password };
-      const result = await fetch(
-        'https://api-nodejs-todolist.herokuapp.com/user/register',
-        {
-          method: 'POST',
-          headers: {
-            'Content-type': 'application/json'
-          },
-          body: JSON.stringify(newUser)
-        }
-      );
-      const result2 = await result.json();
-      const tokenValue = result2.token;
-      localStorage.setItem('token-value', tokenValue);
-    } catch (err) {
-      console.log(err);
-    }
-
-    if (localStorage.getItem('token-value') !== '') {
-      navigate('/home');
-      setRegisterState(false);
-    }
-  }
+  const registerState = useSelector((state) => state.userData.registerLoader);
 
   return (
     <Box
@@ -107,7 +86,14 @@ const Register = () => {
       />
       <br />
       <SharedButton
-        handleShow={() => registerButton()}
+        handleShow={() =>
+          dispatch(
+            register(
+              { name: name, age: age, email: email, password: password },
+              navigate
+            )
+          )
+        }
         buttonText={registerState ? <Spinner /> : 'REGISTER'}
       />
       <br />

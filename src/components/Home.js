@@ -11,11 +11,21 @@ import AddItem from './AddItem';
 import Spinner from './shared/Spinner';
 import './style.css';
 
+import { useDispatch, useSelector } from 'react-redux';
+
+import { deleteTodo } from '../action/actionFile';
+import {
+  ADD_TODO_REQUEST,
+  SET_EDIT_TODO
+} from '../constants/constantContainer';
+
 const Home = () => {
-  const [todos, setTodo] = useState([]);
   const [pageLoader, setPageLoader] = useState(true);
-  const [deleteLoader, setDeleteLoader] = useState({});
-  const [item, setItem] = useState(null);
+
+  const deleteLoader = useSelector((state) => state.todosData.deleteItemLoader);
+  const dispatch = useDispatch();
+  const todos = useSelector((state) => state.todosData.todosList);
+  const editTodoValue = useSelector((state) => state.todosData.editTodoValue);
 
   useEffect(() => {
     const token = localStorage.getItem('token-value');
@@ -30,30 +40,13 @@ const Home = () => {
       })
       .then((data) => {
         const todoData = data.data.reverse();
-        setTodo(todoData);
+        dispatch({ type: ADD_TODO_REQUEST, payload: todoData });
         setPageLoader(false);
       })
       .catch((err) => {
         console.log(err);
       });
-  }, []);
-
-  async function deletetodo(id, index) {
-    setDeleteLoader({ ...deleteLoader, [index]: true });
-    const token = localStorage.getItem('token-value');
-    await fetch(`https://api-nodejs-todolist.herokuapp.com/task/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-type': 'application/json',
-        Authorization: `Bearer ${token}`
-      }
-    });
-    const filterItems = todos.filter((item) => {
-      return item._id !== id;
-    });
-    setTodo(filterItems);
-    setDeleteLoader({ ...deleteLoader, [index]: false });
-  }
+  }, [dispatch]);
 
   return pageLoader ? (
     <Box sx={{ position: 'absolute', top: '300px', left: '750px' }}>
@@ -78,14 +71,16 @@ const Home = () => {
       <Typography color="#407cc9" gutterBottom variant="h4" align="center">
         TODO LIST
       </Typography>
-      <AddItem todos={todos} setTodo={setTodo} />
+      <AddItem />
       <Box>
         {todos.map((todoItem, i) => (
           <p className="inputTodo" key={todoItem._id}>
             <EditIcon
               color="action"
               fontSize="small"
-              onClick={() => setItem(todoItem)}
+              onClick={() =>
+                dispatch({ type: SET_EDIT_TODO, payload: todoItem })
+              }
             />
             {todoItem.description}
             {!deleteLoader[i] ? (
@@ -93,7 +88,7 @@ const Home = () => {
                 <CloseIcon
                   color="action"
                   fontSize="small"
-                  onClick={() => deletetodo(todoItem._id, i)}
+                  onClick={() => dispatch(deleteTodo(todoItem._id, i))}
                 />
               </>
             ) : (
@@ -101,14 +96,7 @@ const Home = () => {
             )}
           </p>
         ))}
-        {item && (
-          <EditItemModal
-            todos={todos}
-            setTodo={setTodo}
-            item={item}
-            setItem={setItem}
-          />
-        )}
+        {editTodoValue && <EditItemModal />}
       </Box>
     </Box>
   );

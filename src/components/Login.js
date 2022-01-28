@@ -10,41 +10,21 @@ import { styled } from '@mui/material';
 import Spinner from './shared/Spinner';
 import SharedButton from './shared/SharedButton';
 
+import { login } from '../action/actionFile';
+
+import { useDispatch, useSelector } from 'react-redux';
+
 const Login = () => {
+  const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
-  const [loginState, setLoginState] = useState(false);
 
   const Field1 = styled(Typography)({
     marginTop: 10
   });
 
-  async function loginButton() {
-    setLoginState(true);
-    try {
-      const data = { email, password };
-      const res1 = await fetch(
-        'https://api-nodejs-todolist.herokuapp.com/user/login',
-        {
-          method: 'POST',
-          headers: {
-            'Content-type': 'application/json'
-          },
-          body: JSON.stringify(data)
-        }
-      );
-      const res2 = await res1.json();
-      const tokenValue = res2.token;
-      localStorage.setItem('token-value', tokenValue);
-    } catch (err) {
-      console.log(err);
-    }
-    if (localStorage.getItem('token-value') !== '') {
-      navigate('/home');
-      setLoginState(false);
-    }
-  }
+  const loginState = useSelector((state) => state.userData.loginLoader);
 
   return (
     <Box
@@ -84,7 +64,9 @@ const Login = () => {
       />
       <br />
       <SharedButton
-        handleShow={() => loginButton()}
+        handleShow={() =>
+          dispatch(login({ email: email, password: password }, navigate))
+        }
         buttonText={loginState ? <Spinner /> : 'LOGIN'}
       />
       <br />

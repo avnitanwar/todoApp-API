@@ -1,5 +1,4 @@
 import React from 'react';
-import { useState } from 'react';
 
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -7,49 +6,37 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Button, TextField } from '@mui/material';
 
-const EditItemModal = ({ todos, setTodo, item, setItem }) => {
-  const [input, setInput] = useState(item.description);
+import { useDispatch, useSelector } from 'react-redux';
 
-  const open = item !== null ? true : false;
+import {
+  UPDATE_EDIT_TODO_VALUE,
+  SET_EDIT_TODO
+} from '../constants/constantContainer';
+import { editTodo } from '../action/actionFile';
 
-  async function editItem(id) {
-    try {
-      const token = localStorage.getItem('token-value');
-      const res1 = await fetch(
-        `https://api-nodejs-todolist.herokuapp.com/task/${id}`,
-        {
-          method: 'PUT',
-          headers: {
-            'Content-type': 'application/json',
-            Authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            description: input
-          })
-        }
-      );
-      const res2 = await res1.json();
-      const updatedItem = res2.data.description;
-      const updatedList = todos.map((todoItem) => {
-        return todoItem._id === id
-          ? { ...todoItem, description: updatedItem }
-          : todoItem;
-      });
-      setTodo(updatedList);
-      setItem(null);
-    } catch (err) {
-      console.log(err);
-    }
-  }
+const EditItemModal = () => {
+  const dispatch = useDispatch();
+  //const todos = useSelector((state) => state.todosData.todosList); //todos
+  const editTodoValue = useSelector((state) => state.todosData.editTodoValue); //item
+  const updatededitTodoValue = useSelector(
+    (state) => state.todosData.updatedTodoValue
+  ); //input
+
+  const open = editTodoValue !== null ? true : false;
 
   return (
-    <Dialog open={open} onClose={() => setItem(null)}>
+    <Dialog
+      open={open}
+      onClose={() => dispatch({ type: SET_EDIT_TODO, payload: null })}
+    >
       <DialogTitle>EDIT TODO</DialogTitle>
       <DialogContent>
         <TextField
           autoFocus
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
+          value={updatededitTodoValue}
+          onChange={(e) =>
+            dispatch({ type: UPDATE_EDIT_TODO_VALUE, payload: e.target.value })
+          }
           margin="dense"
           type="email"
           fullWidth
@@ -57,8 +44,14 @@ const EditItemModal = ({ todos, setTodo, item, setItem }) => {
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => editItem(item._id)}>DONE</Button>
-        <Button onClick={() => setItem(null)}>CANCEL</Button>
+        <Button onClick={() => dispatch(editTodo(editTodoValue._id))}>
+          DONE
+        </Button>
+        <Button
+          onClick={() => dispatch({ type: SET_EDIT_TODO, payload: null })}
+        >
+          CANCEL
+        </Button>
       </DialogActions>
     </Dialog>
   );
